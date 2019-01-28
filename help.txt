@@ -1,0 +1,42 @@
+% descriptions of the dataset ‘ANNInput_below2.5.dat'
+% Row (排) 1-32: the Atmospheric downward radiance in TASI 32 bands
+% Row 33-64:the Atmospheric upward radiance in TASI 32 bands
+% Row 65-96: the Atmospheric upward transmittance in TASI 32 bands
+% Row 97: the land surface temperature
+% Row 98-129: the emissivity in TASI bands
+% Row 130-161: the TOA radiance in 32 bands of TASI sensor from simulated data
+
+
+Ts_r = data(97,:)
+DownwardRad = data(1:32,:);
+UpwardRad = data(33:64,:); 
+UpwardTrans = data(65:96,:);
+Emiss = data(98:129,:);
+TOARad = data(130:161,:);
+
+
+% 七个特征通道1,3,8,11,14,25,31。从1开始计算的
+IndexBands = [1,3,8,11,14,25,31];
+
+输入：（32列）
+Row 130-161
+
+输出：
+DownwardRad 中的IndexBands 
+UpwardRad 中的IndexBands 
+UpwardTrans  中的IndexBands 
+Emiss  中的IndexBands 
+Ts_r
+共计29个参数
+
+
+% 关于文件的说明
+
+./archs/ann_net.py 为全连接网络参数的设置<神经网络的层数和每层神经元数目和激活函数等，可修改参数调优>
+./models/ 里面有两个已经训练的模型 model.pkl和model2.pkl 
+./rs_data.py 是对数据的预处理,获取特征波段(7个)的上下行辐射和透过率、发射率和地表温度以及所有波段表观辐亮度
+共29 + 32列
+./trainer.py 为模型训练和复用的接口
+./main..py 为程序入口 里面的变量file指定训练数据(格式为32上行 + 32下行 + 32透过 + 1温度 + 32发射率 + 32表观辐亮度)
+变量model_path指定模型的获取或者存放目录,布尔型变量_train为True时表示进行模型训练, Fasle表示进行模型预测
+预测的输入数据格式与模型训练数据格式是一致的
